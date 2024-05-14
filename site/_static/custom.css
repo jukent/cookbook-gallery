@@ -159,3 +159,23 @@ main.banner-main #project-pythia {
   padding: 0;
   margin: 0;
 }
+
+.dropdown-item {
+  display: block;
+}
+
+.dropdown-item input[type="checkbox"] {
+  margin-right: 0.5em;
+}
+
+/* Remove box-shadow from .sd-dropdown */
+details.sd-dropdown {
+  box-shadow: none !important;
+}
+
+/* Add a border around div.sd-summary-content */
+details.sd-dropdown summary.sd-card-header + div.sd-summary-content {
+  background-color: white;
+  border: 0.2rem solid var(--pst-sd-dropdown-color) !important; /* Border on all sides */
+  border-radius: calc(.25rem - 1px);  /* Optional: Apply the same radius to all corners */
+}
