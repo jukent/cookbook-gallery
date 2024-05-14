@@ -249,14 +249,15 @@ def build_from_repos(
 
     grid_body = "\n".join(grid_body)
 
-    stitle = f"#### {subtitle}" if subtitle else ""
-    stext = subtext if subtext else ""
-
     grid = f"""
         # {title}
         
-        {stitle}
-        {stext}
+        <div class="subtext">
+            <p>Pythia Cookbooks provide example workflows on more advanced and domain-specific problems developed by the Pythia community. Cookbooks build on top of skills you learn in <a href="https://foundations.projectpythia.org/landing-page.html">Pythia Foundations</a>.</p>
+            <p>Cookbooks are created from Jupyter Notebooks that we strive to binderize so each Cookbook can be <a href="https://foundations.projectpythia.org/preamble/how-to-use.html#interacting-with-jupyter-notebooks-in-the-cloud-via-binder">executed in the cloud with a single click from your browser</a>, but in some instances executing a Cookbook will require <a href="https://foundations.projectpythia.org/preamble/how-to-use.html#interacting-with-jupyter-books-locally">running the notebooks locally</a>.</p>
+            <p>Interested in contributing a new Cookbook or contributing to an existing Cookbook? Great! Please see the <a href="https://github.com/ProjectPythia/.github/blob/main/.github/CONTRIBUTING.md">Project Pythia Cookbook Contributor's Guide</a>, and consider opening a discussion under the <a href="https://discourse.pangeo.io/c/education/project-pythia/60">Project Pythia category of the Pangeo Discourse</a>.</p>
+        </div>
+
         
         {menu_html}
         

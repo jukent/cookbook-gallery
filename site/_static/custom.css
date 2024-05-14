@@ -168,14 +168,25 @@ main.banner-main #project-pythia {
   margin-right: 0.5em;
 }
 
-/* Remove box-shadow from .sd-dropdown */
 details.sd-dropdown {
   box-shadow: none !important;
 }
 
-/* Add a border around div.sd-summary-content */
 details.sd-dropdown summary.sd-card-header + div.sd-summary-content {
-  background-color: white;
-  border: 0.2rem solid var(--pst-sd-dropdown-color) !important; /* Border on all sides */
-  border-radius: calc(.25rem - 1px);  /* Optional: Apply the same radius to all corners */
+  background-color: white !important;
+  border: 0.2rem solid var(--pst-sd-dropdown-color) !important;
+  border-radius: calc(.25rem - 1px);
+}
+
+.bd-content .sd-card .sd-card-header {
+  background-color: var(--pst-color-panel-background) !important;
+}
+
+details.sd-dropdown summary.sd-card-header {
+  border: 0.2rem solid var(--pst-sd-dropdown-color) !important;
+  border-radius: calc(.25rem - 1px);
+}
+
+p {
+  color: black;
 }
