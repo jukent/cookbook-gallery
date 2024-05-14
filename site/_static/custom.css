@@ -153,3 +153,9 @@ main.banner-main #project-pythia {
 .tagsandbadges {
   padding: 0 0;
 }
+
+.dropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
