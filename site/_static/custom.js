@@ -1,67 +1,35 @@
-var buttons = document.querySelectorAll('.modal-btn')
-var backdrop = document.querySelector('.modal-backdrop')
-var modals = document.querySelectorAll('.modal')
-
-function openModal(i) {
-  backdrop.style.display = 'block'
-  modals[i].style.display = 'block'
-}
-
-function closeModal(i) {
-  backdrop.style.display = 'none'
-  modals[i].style.display = 'none'
-}
-
-for (i = 0; i < buttons.length; i++) {
-  buttons[i].addEventListener(
-    'click',
-    (function (j) {
-      return function () {
-        openModal(j)
+function getClassOfCheckedCheckboxes(checkboxes) {
+  var tags = [];
+  if (checkboxes && checkboxes.length > 0) {
+    for (var i = 0; i < checkboxes.length; i++) {
+      var cb = checkboxes[i];
+      if (cb.checked) {
+        tags.push(cb.getAttribute("rel"));
       }
-    })(i)
-  )
-  backdrop.addEventListener(
-    'click',
-    (function (j) {
-      return function () {
-        closeModal(j)
-      }
-    })(i)
-  )
+    }
+  }
+  return tags;
 }
-
 
 function change() {
   var affiliationCbs = document.querySelectorAll(".affiliation input[type='checkbox']");
   var domainsCbs = document.querySelectorAll(".domains input[type='checkbox']");
-  var formatsCbs = document.querySelectorAll(".formats input[type='checkbox']");
   var packagesCbs = document.querySelectorAll(".packages input[type='checkbox']");
 
+  for (var i = 0; i < affiliationCbs.length; i++) {
+    affiliationCbs[i].addEventListener('click', change);
+    affiliationCbs[i].addEventListener('change', change);
+  }
+
+  var domainTags = getClassOfCheckedCheckboxes(domainsCbs);
+  var packageTags = getClassOfCheckedCheckboxes(packagesCbs);
+
   var filters = {
-    affiliation: getClassOfCheckedCheckboxes(affiliationCbs),
-    domains: getClassOfCheckedCheckboxes(domainsCbs),
-    formats: getClassOfCheckedCheckboxes(formatsCbs),
-    packages: getClassOfCheckedCheckboxes(packagesCbs)
+    domains: domainTags,
+    packages: packageTags
   };
 
   filterResults(filters);
-}
-
-function getClassOfCheckedCheckboxes(checkboxes) {
-  var classes = [];
-
-  if (checkboxes && checkboxes.length > 0) {
-    for (var i = 0; i < checkboxes.length; i++) {
-      var cb = checkboxes[i];
-
-      if (cb.checked) {
-        classes.push(cb.getAttribute("rel"));
-      }
-    }
-  }
-
-  return classes;
 }
 
 function filterResults(filters) {
@@ -74,111 +42,33 @@ function filterResults(filters) {
 
   for (var i = 0; i < rElems.length; i++) {
     var el = rElems[i];
+    var isHidden = false; // Initially assume visible
 
-    if (filters.affiliation.length > 0) {
-      var isHidden = true;
+    // Check if any domain or package filter applies
+    var hasDomainFilter = filters.domains.length > 0;
+    var hasPackageFilter = filters.packages.length > 0;
 
-      for (var j = 0; j < filters.affiliation.length; j++) {
-        var filter = filters.affiliation[j];
+    if (hasDomainFilter || hasPackageFilter) {
+      var isMatching = false; // Check if card matches any filter
 
-        if (el.classList.contains(filter)) {
-          isHidden = false;
-          break;
+      for (var j = 0; j < el.classList.length; j++) {
+        var cardClass = el.classList[j];
+
+        // Check if card class matches any domain or package filter
+        if (filters.domains.indexOf(cardClass) !== -1 || filters.packages.indexOf(cardClass) !== -1) {
+          isMatching = true;
+          break; // Stop checking if a matching filter is found
         }
       }
 
-      if (isHidden) {
-        hiddenElems.push(el);
-      }
+      isHidden = !isMatching; // Hide if no matching filter is found
     }
 
-    if (filters.domains.length > 0) {
-      var isHidden = true;
-
-      for (var j = 0; j < filters.domains.length; j++) {
-        var filter = filters.domains[j];
-
-        if (el.classList.contains(filter)) {
-          isHidden = false;
-          break;
-        }
-      }
-
-      if (isHidden) {
-        hiddenElems.push(el);
-      }
-    }
-
-    if (filters.formats.length > 0) {
-      var isHidden = true;
-
-      for (var j = 0; j < filters.formats.length; j++) {
-        var filter = filters.formats[j];
-
-        if (el.classList.contains(filter)) {
-          isHidden = false;
-          break;
-        }
-      }
-
-      if (isHidden) {
-        hiddenElems.push(el);
-      }
-    }
-
-    if (filters.packages.length > 0) {
-      var isHidden = true;
-
-      for (var j = 0; j < filters.packages.length; j++) {
-        var filter = filters.packages[j];
-
-        if (el.classList.contains(filter)) {
-          isHidden = false;
-          break;
-        }
-      }
-
-      if (isHidden) {
-        hiddenElems.push(el);
-      }
+    if (isHidden) {
+      hiddenElems.push(el);
+      el.classList.replace("d-flex", "d-none"); // Hide the element
+    } else {
+      el.classList.replace("d-none", "d-flex"); // Show the element
     }
   }
-
-  for (var i = 0; i < rElems.length; i++) {
-    rElems[i].classList.replace("d-none", "d-flex");
-  }
-
-  if (hiddenElems.length <= 0) {
-    return;
-  }
-
-  for (var i = 0; i < hiddenElems.length; i++) {
-    hiddenElems[i].classList.replace("d-flex", "d-none");
-  }
-}
-
-
-function clearCbs() {
-  var affiliationCbs = document.querySelectorAll(".affiliation input[type='checkbox']");
-  var domainsCbs = document.querySelectorAll(".domains input[type='checkbox']");
-  var formatsCbs = document.querySelectorAll(".formats input[type='checkbox']");
-  var packagesCbs = document.querySelectorAll(".packages input[type='checkbox']");
-
-  for (var i = 0; i < affiliationCbs.length; i++) {
-    affiliationCbs[i].checked=false;
-  }
-
-  for (var i = 0; i < domainsCbs.length; i++) {
-    domainsCbs[i].checked=false;
-  }
-
-  for (var i = 0; i < formatsCbs.length; i++) {
-    formatsCbs[i].checked=false;
-  }
-
-  for (var i = 0; i < packagesCbs.length; i++) {
-    packagesCbs[i].checked=false;
-  }
-
-  change();
 }

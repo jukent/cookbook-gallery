@@ -10,11 +10,6 @@ def main(app):
 
     title = "Cookbooks Gallery"
 
-    subtext = ""
-    with open("cookbook_gallery_subtext.md") as fid:
-        for line in fid:
-            subtext = subtext + line
-
     submit_btn_link = "https://github.com/ProjectPythia/cookbook-gallery/issues/new?assignees=ProjectPythia%2Feducation&labels=content%2Ccookbook-gallery-submission&template=update-cookbook-gallery.yaml&title=Update+Gallery+with+new+Cookbook"
     submit_btn_txt = "Submit a new Cookbook"
     menu_html = generate_menu(
@@ -22,7 +17,7 @@ def main(app):
     )
 
     build_from_repos(
-        repo_dicts, "index", title=title, subtext=subtext, menu_html=menu_html
+        repo_dicts, "index", title=title, menu_html=menu_html
     )
 
 

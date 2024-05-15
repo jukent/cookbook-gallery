@@ -267,7 +267,7 @@ def build_from_repos(
         {grid_body}
         
         <div class="modal-backdrop"></div>
-        <script src="/_static/custom.js"></script>
+        <script src="../html/_static/custom.js"></script>
     """
 
     grid = '\n'.join([m.lstrip() for m in grid.split('\n')])
