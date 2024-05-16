@@ -197,8 +197,6 @@ def build_from_repos(
         ]
         tags = "\n".join(tags)
 
-        # tag_class_str = " ".join(tag_list_f)
-
         description = repo_dict["description"]
         ellipsis_str = '<a class="modal-btn"> ... more</a>'
         short_description = truncate(description, max_descr_len, ellipsis=ellipsis_str)
