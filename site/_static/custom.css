@@ -182,6 +182,11 @@ details.sd-dropdown summary.sd-card-header + div.sd-summary-content {
   background-color: var(--pst-color-panel-background) !important;
 }
 
+.sd-summary-content.sd-card-body.docutils {
+  position: absolute;
+  z-index: 100;
+}
+
 details.sd-dropdown summary.sd-card-header {
   border: 0.2rem solid var(--pst-sd-dropdown-color) !important;
   border-radius: calc(.25rem - 1px);
