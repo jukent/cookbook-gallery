@@ -85,7 +85,6 @@ function clearCbs() {
   change(); 
 }
 
-
 // Initial call to set up correct margins when the page loads
 document.addEventListener('DOMContentLoaded', updateMargins);
 
