@@ -7,7 +7,7 @@ function getClassOfCheckedCheckboxes(checkboxes) {
   });
   return tags;
 }
-  
+
 function change() {
   console.log("Change event fired.");
   var domainsCbs = document.querySelectorAll(".domains input[type='checkbox']");
@@ -23,7 +23,7 @@ function change() {
 
   filterResults(filters);
 }
-  
+
 function filterResults(filters) {
   console.log("Filtering results...");
   var rElems = document.querySelectorAll(".tagged-card");
@@ -33,28 +33,8 @@ function filterResults(filters) {
 
     // Check if the element has any domain or package filter
     if (filters.domains.length > 0 || filters.packages.length > 0) {
-      var hasMatchingDomain = false;
-      var hasMatchingPackage = false;
-
-      // Check if the element matches at least one selected domain filter
-      if (filters.domains.length > 0) {
-        hasMatchingDomain = filters.domains.some(function (domain) {
-          return el.classList.contains(domain);
-        });
-      } else {
-        // If no domain filters are selected, assume it matches
-        hasMatchingDomain = true;
-      }
-
-      // Check if the element matches at least one selected package filter
-      if (filters.packages.length > 0) {
-        hasMatchingPackage = filters.packages.some(function (package) {
-          return el.classList.contains(package);
-        });
-      } else {
-        // If no package filters are selected, assume it matches
-        hasMatchingPackage = true;
-      }
+      var hasMatchingDomain = filters.domains.length === 0 || filters.domains.some(domain => el.classList.contains(domain));
+      var hasMatchingPackage = filters.packages.length === 0 || filters.packages.some(package => el.classList.contains(package));
 
       // The element should be visible if it matches any filter within each category
       isVisible = hasMatchingDomain && hasMatchingPackage;
@@ -69,11 +49,44 @@ function filterResults(filters) {
       el.classList.add("d-none");
     }
   });
+
+  // Update the margins after filtering
+  updateMargins();
 }
 
 var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-  checkboxes.forEach(function (checkbox) {
-    checkbox.addEventListener("change", change);
-    });
-  
+checkboxes.forEach(function (checkbox) {
+  checkbox.addEventListener("change", change);
+});
+
+function updateMargins() {
+  const columns = document.querySelectorAll('.sd-col.sd-d-flex-row.docutils');
+
+  columns.forEach(column => {
+    // Check if this column has any visible cards
+    const hasVisibleCard = Array.from(column.children).some(child => !child.classList.contains('d-none'));
+
+    // Toggle a class based on whether there are visible cards
+    if (hasVisibleCard) {
+      column.classList.add('has-visible-card');
+    } else {
+      column.classList.remove('has-visible-card');
+    }
+  });
+}
+
+function clearCbs() {
+  // Select all checkbox inputs and uncheck them
+  var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+  checkboxes.forEach(function(checkbox) {
+    checkbox.checked = false;
+  });
+
+  change(); 
+}
+
+
+// Initial call to set up correct margins when the page loads
+document.addEventListener('DOMContentLoaded', updateMargins);
+
 console.log("Script loaded.");

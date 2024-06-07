@@ -1,5 +1,6 @@
 import itertools, json, yaml, pathlib, subprocess, requests
 from truncatehtml import truncate
+import re
 
 
 def _grab_binder_link(repo):
@@ -107,14 +108,18 @@ def _generate_sorted_tag_keys(repo_dicts):
     return sorted(key_set)
 
 
+def _title_case_preserve(s):
+    return re.sub(r'\b(\w)', lambda m: m.group(1).upper(), s)
+
 def _generate_tag_set(repo_dicts, tag_key=None):
 
     tag_set = set()
     for repo_dict in repo_dicts:
         for k, e in repo_dict["tags"].items():
+            tags = [_title_case_preserve(t) for t in e]
             if tag_key and k != tag_key:
                 continue
-            for t in e:
+            for t in tags:
                 tag_set.add(t)
 
     return tag_set
@@ -192,7 +197,7 @@ def build_from_repos(
         tag_list = sorted((itertools.chain(*tag_dict.values())))
         tag_list_f = [tag.replace(" ", "-") for tag in tag_list]
         tags = [
-            f'<span class="badge bg-primary mybadges">{tag}</span>'
+            f'<span class="badge bg-primary mybadges">{_title_case_preserve(tag)}</span>'
             for tag in tag_list_f
         ]
         tags = "\n".join(tags)
@@ -261,7 +266,7 @@ def build_from_repos(
         {menu_html}
         
         ::::{{grid}} 1
-        :gutter: 4
+        :gutter: 0
         
         {grid_body}
         

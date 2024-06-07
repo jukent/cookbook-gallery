@@ -195,3 +195,7 @@ details.sd-dropdown summary.sd-card-header {
 p {
   color: black;
 }
+
+.sd-col.sd-d-flex-row.docutils.has-visible-card {
+  margin-bottom: 1rem;
+}
