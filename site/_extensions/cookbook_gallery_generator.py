@@ -10,11 +10,6 @@ def main(app):
 
     title = "Cookbooks Gallery"
 
-    subtext = ""
-    with open("cookbook_gallery_subtext.md") as fid:
-        for line in fid:
-            subtext = subtext + line
-
     submit_btn_link = "https://projectpythia.org/cookbook-guide.html"
     submit_btn_txt = "How can I create a new Cookbook?"
     menu_html = generate_menu(

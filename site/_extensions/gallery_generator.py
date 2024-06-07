@@ -223,7 +223,7 @@ def build_from_repos(
             modal_str = '\n'.join([m.lstrip() for m in modal_str.split('\n')])
         else:
             modal_str = ""
-    
+
         new_card = f"""
                         :::{{grid-item-card}}
                         :shadow: md
