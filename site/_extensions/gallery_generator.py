@@ -1,5 +1,6 @@
 import itertools, json, yaml, pathlib, subprocess, requests
 from truncatehtml import truncate
+import re
 
 
 def _grab_binder_link(repo):
@@ -107,14 +108,18 @@ def _generate_sorted_tag_keys(repo_dicts):
     return sorted(key_set)
 
 
+def _title_case_preserve(s):
+    return re.sub(r'\b(\w)', lambda m: m.group(1).upper(), s)
+
 def _generate_tag_set(repo_dicts, tag_key=None):
 
     tag_set = set()
     for repo_dict in repo_dicts:
         for k, e in repo_dict["tags"].items():
+            tags = [_title_case_preserve(t) for t in e]
             if tag_key and k != tag_key:
                 continue
-            for t in e:
+            for t in tags:
                 tag_set.add(t)
 
     return tag_set
@@ -126,12 +131,12 @@ def _generate_tag_menu(repo_dicts, tag_key):
     tag_list = sorted(tag_set)
 
     options = "".join(
-        f'<li><label class="dropdown-item checkbox {tag_key}"><input type="checkbox" rel={tag.replace(" ", "-")} onchange="change();">&nbsp;{tag}</label></li>'
+        f'<li><label class="dropdown-item checkbox {tag_key}"><input type="checkbox" rel={tag.replace(" ", "-").lower()} onchange="change();">&nbsp;{tag}</label></li>'
         for tag in tag_list
     )
 
     return f"""
-            :::{{dropdown}} {tag_key.title()}
+            :::{{dropdown}} {tag_key}
             <div class="dropdown">
                 <ul>
                     {options}
@@ -192,12 +197,11 @@ def build_from_repos(
         tag_list = sorted((itertools.chain(*tag_dict.values())))
         tag_list_f = [tag.replace(" ", "-") for tag in tag_list]
         tags = [
-            f'<span class="badge bg-primary mybadges">{tag}</span>'
+            f'<span class="badge bg-primary mybadges">{_title_case_preserve(tag)}</span>'
             for tag in tag_list_f
         ]
         tags = "\n".join(tags)
-
-        # tag_class_str = " ".join(tag_list_f)
+        tag_classes = " ".join(tag_list_f)
 
         description = repo_dict["description"]
         ellipsis_str = '<a class="modal-btn"> ... more</a>'
@@ -206,42 +210,42 @@ def build_from_repos(
         if ellipsis_str in short_description:
             modal_str = f"""
             <div class="modal">
-            <div class="content">
-            <img src="{thumbnail_url}" class="modal-img" />
-            <h3 class="display-3">{cookbook_title}</h3>
-            {authors_str}
-            <p class="my-2">{description}</p>
-            <p class="my-2">{tags}</p>
-            <p class="mt-3 mb-0"><a href="{cookbook_url}" class="btn btn-outline-primary btn-block">Visit Website</a></p>
-            </div>
+                <div class="content">
+                    <img src="{thumbnail_url}" class="modal-img" />
+                    <h3 class="display-3">{cookbook_title}</h3>
+                    {authors_str}
+                    <p class="my-2">{description}</p>
+                    <p class="my-2">{tags}</p>
+                    <p class="mt-3 mb-0"><a href="{cookbook_url}" class="btn btn-outline-primary btn-block">Visit Website</a></p>
+                </div>
             </div>
             """
             modal_str = '\n'.join([m.lstrip() for m in modal_str.split('\n')])
         else:
             modal_str = ""
-            new_card = f"""\
+        new_card = f"""
                         :::{{grid-item-card}}
                         :shadow: md
                         :class-footer: card-footer
-                        <div class="d-flex gallery-card">
-                        <img src="{thumbnail_url}" class="gallery-thumbnail" />
-                        <div class="container">
-                        <a href="{cookbook_url}" class="text-decoration-none"><h4 class="display-4 p-0">{cookbook_title}</h4></a>
-                        <p class="card-subtitle">{authors_str}</p>
-                        <p class="my-2">{short_description} </p>
-                        </div>
-                        </div>
-                        {modal_str}
-                        
-                        +++
-                        
-                        <div class="tagsandbadges">
-                            {tags}
-                            <div>{status_badges}</div>
-                        </div>
-                        
-                        :::
+                        :class-card: tagged-card {tag_classes}
 
+                            <div class="d-flex gallery-card">
+                                <img src="{thumbnail_url}" class="gallery-thumbnail" />
+                                <div class="container">
+                                    <a href="{cookbook_url}" class="text-decoration-none"><h4 class="display-4 p-0">{cookbook_title}</h4></a>
+                                    <p class="card-subtitle">{authors_str}</p>
+                                    <p class="my-2">{short_description} </p>
+                                </div>
+                            </div>
+                            {modal_str}
+                            
+                            +++
+                            
+                            <div class="tagsandbadges">
+                                {tags}
+                                <div>{status_badges}</div>
+                            </div>
+                        :::
                         """
 
         grid_body.append('\n'.join([m.lstrip() for m in new_card.split('\n')]))
@@ -249,25 +253,25 @@ def build_from_repos(
 
     grid_body = "\n".join(grid_body)
 
-    stitle = f"#### {subtitle}" if subtitle else ""
-    stext = subtext if subtext else ""
-
     grid = f"""
         # {title}
-        {'=' * len(title)}
         
-        {stitle}
-        {stext}
+        <div class="subtext">
+            <p>Pythia Cookbooks provide example workflows on more advanced and domain-specific problems developed by the Pythia community. Cookbooks build on top of skills you learn in <a href="https://foundations.projectpythia.org/landing-page.html">Pythia Foundations</a>.</p>
+            <p>Cookbooks are created from Jupyter Notebooks that we strive to binderize so each Cookbook can be <a href="https://foundations.projectpythia.org/preamble/how-to-use.html#interacting-with-jupyter-notebooks-in-the-cloud-via-binder">executed in the cloud with a single click from your browser</a>, but in some instances executing a Cookbook will require <a href="https://foundations.projectpythia.org/preamble/how-to-use.html#interacting-with-jupyter-books-locally">running the notebooks locally</a>.</p>
+            <p>Interested in contributing a new Cookbook or contributing to an existing Cookbook? Great! Please see the <a href="https://github.com/ProjectPythia/.github/blob/main/.github/CONTRIBUTING.md">Project Pythia Cookbook Contributor's Guide</a>, and consider opening a discussion under the <a href="https://discourse.pangeo.io/c/education/project-pythia/60">Project Pythia category of the Pangeo Discourse</a>.</p>
+        </div>
+
         
         {menu_html}
         
         ::::{{grid}} 1
-        :gutter: 4
+        :gutter: 0
         
         {grid_body}
         
         <div class="modal-backdrop"></div>
-        <script src="/_static/custom.js"></script>
+        <script src="../html/_static/custom.js"></script>
     """
 
     grid = '\n'.join([m.lstrip() for m in grid.split('\n')])
