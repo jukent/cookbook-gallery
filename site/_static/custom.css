@@ -179,7 +179,9 @@ details.sd-dropdown summary.sd-card-header + div.sd-summary-content {
 }
 
 .bd-content .sd-card .sd-card-header {
-  background-color: var(--pst-color-panel-background) !important;
+  border-color: #1a648f !important;
+  border-radius: .5rem;
+  color: #1a648f;
 }
 
 .sd-summary-content.sd-card-body.docutils {
@@ -188,12 +190,29 @@ details.sd-dropdown summary.sd-card-header + div.sd-summary-content {
 }
 
 details.sd-dropdown summary.sd-card-header {
-  border: 0.2rem solid var(--pst-sd-dropdown-color) !important;
+  border: 0.2rem solid #1a648f important;
   border-radius: calc(.25rem - 1px);
+  color: #1a648f;
+}
+
+details.sd-dropdown:not([open])>.sd-card-header {
+  background-color: var(--pst-color-panel-background) !important;
+  border: 2px solid #1a648f !important;
+  border-radius: .5rem;
+
+details.sd-dropdown[open] > .sd-card-header {
+  background-color: #1a648f !important;
+  color: white;
+  border: 2px solid #1a648f !important;
+  border-radius: .5rem;
 }
 
 p {
   color: black;
+}
+
+main.bd-content #main-content a {
+  color: #1a648f;
 }
 
 .sd-col.sd-d-flex-row.docutils.has-visible-card {
