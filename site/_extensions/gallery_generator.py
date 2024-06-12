@@ -258,6 +258,9 @@ def build_from_repos(
         grid_body.append('\n'.join([m.lstrip() for m in new_card.split('\n')]))
 
 
+    stitle = f"#### {subtitle}" if subtitle else ""
+    stext = subtext if subtext else ""
+
     grid_body = "\n".join(grid_body)
 
     grid = f"""
