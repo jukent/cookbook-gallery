@@ -117,6 +117,9 @@ def _generate_sorted_tag_keys(repo_dicts):
 def _title_case_preserve(s):
     return re.sub(r'\b(\w)', lambda m: m.group(1).upper(), s)
 
+def _make_class(s):
+    return re.sub(r'^\d+', '', s.replace(" ", "-").lower())
+
 def _generate_tag_set(repo_dicts, tag_key=None):
 
     tag_set = set()
@@ -137,7 +140,7 @@ def _generate_tag_menu(repo_dicts, tag_key):
     tag_list = sorted(tag_set)
 
     options = "".join(
-        f'<li><label class="dropdown-item checkbox {tag_key}"><input type="checkbox" rel={tag.replace(" ", "-").lower()} onchange="change();">&nbsp;{tag}</label></li>'
+        f'<li><label class="dropdown-item checkbox {tag_key}"><input type="checkbox" rel={_make_class(tag)} onchange="change();">&nbsp;{tag}</label></li>'
         for tag in tag_list
     )
 
